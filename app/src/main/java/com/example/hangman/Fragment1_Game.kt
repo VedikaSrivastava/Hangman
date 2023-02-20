@@ -25,7 +25,7 @@ class GameFragment : Fragment() {
         hangmanImageView = view.findViewById(R.id.image_view_hangman)
 
         // Load the word list and choose a random word
-        letters = resources.getStringArray(R.array.letters).toList()
+        letters = resources.getStringArray(R.array.words).toList()
         chosenWord = chooseWord()
 
         // Initialize the guessed letters set

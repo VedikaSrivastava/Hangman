@@ -16,6 +16,29 @@ class ChooseLetterFragment : Fragment() {
             view.findViewById(R.id.button_a),
             view.findViewById(R.id.button_b),
             view.findViewById(R.id.button_c),
+            view.findViewById(R.id.button_d),
+            view.findViewById(R.id.button_e),
+            view.findViewById(R.id.button_f),
+            view.findViewById(R.id.button_g),
+            view.findViewById(R.id.button_h),
+            view.findViewById(R.id.button_i),
+            view.findViewById(R.id.button_j),
+            view.findViewById(R.id.button_k),
+            view.findViewById(R.id.button_l),
+            view.findViewById(R.id.button_m),
+            view.findViewById(R.id.button_n),
+            view.findViewById(R.id.button_o),
+            view.findViewById(R.id.button_p),
+            view.findViewById(R.id.button_q),
+            view.findViewById(R.id.button_r),
+            view.findViewById(R.id.button_s),
+            view.findViewById(R.id.button_t),
+            view.findViewById(R.id.button_u),
+            view.findViewById(R.id.button_v),
+            view.findViewById(R.id.button_w),
+            view.findViewById(R.id.button_x),
+            view.findViewById(R.id.button_y),
+            view.findViewById(R.id.button_z)
             // and so on for all the letter buttons
         )
         for (button in letterButtons) {
@@ -28,7 +51,9 @@ class ChooseLetterFragment : Fragment() {
         // Disable the button to prevent selecting it again
         button.isEnabled = false
         // Pass the selected letter to the main game fragment
-        val gameFragment = parentFragment as GameFragment
-        gameFragment.checkLetter(button.text.toString())
+        val parentFragment = parentFragment
+        if (parentFragment is GameFragment) {
+            parentFragment.checkLetter(button.text.toString())
+        }
     }
 }
