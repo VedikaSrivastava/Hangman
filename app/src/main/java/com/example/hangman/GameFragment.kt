@@ -1,6 +1,7 @@
 package com.example.hangman
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,13 +10,17 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 
+
+private const val TAG = "CrimeListFragment"
 class GameFragment : Fragment() {
+
+
     private lateinit var wordTextView: TextView
     private lateinit var remainingTextView: TextView
     private lateinit var hangmanImageView: ImageView
     private lateinit var letters: List<String>
     private lateinit var chosenWord: String
-    private lateinit var guessedLetters: Set<String>
+    private var guessedLetters: MutableSet<String> = mutableSetOf()
     private var remainingTurns = 6
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -27,9 +32,11 @@ class GameFragment : Fragment() {
         // Load the word list and choose a random word
         letters = resources.getStringArray(R.array.words).toList()
         chosenWord = chooseWord()
+        println("--------------------- chosenWord: "+ chosenWord)
 
         // Initialize the guessed letters set
-        guessedLetters = emptySet()
+        guessedLetters = mutableSetOf()
+        println("--------------------- guessedLetters: "+ guessedLetters)
 
         // Display the initial state of the game
         updateWordView()
@@ -41,6 +48,7 @@ class GameFragment : Fragment() {
     fun checkLetter(letter: String) {
         // Add the guessed letter to the set and update the display
         guessedLetters += letter
+        println("--------------------- guessedLetters: "+ guessedLetters)
         updateWordView()
 
         // Check if the game is won or lost
@@ -90,10 +98,13 @@ class GameFragment : Fragment() {
             }
         }
         wordTextView.text = wordView.toString()
+        println("--------------------- wordTextView: "+ wordView.toString())
     }
 
     private fun updateRemainingView() {
         val remainingView = "Remaining turns: $remainingTurns"
         remainingTextView.text = remainingView
+        println("--------------------- remainingTextView: "+ remainingView)
+
     }
 }

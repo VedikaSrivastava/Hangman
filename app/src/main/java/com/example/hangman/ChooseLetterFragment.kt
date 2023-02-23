@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import androidx.fragment.app.Fragment
 
-class ChooseLetterFragment : Fragment() {
+class ChooseLetterFragment(gameFragment: GameFragment) : Fragment() {
     private lateinit var letterButtons: Array<Button>
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -42,6 +42,7 @@ class ChooseLetterFragment : Fragment() {
             // and so on for all the letter buttons
         )
         for (button in letterButtons) {
+
             button.setOnClickListener { selectLetter(button) }
         }
         return view
@@ -53,7 +54,14 @@ class ChooseLetterFragment : Fragment() {
         // Pass the selected letter to the main game fragment
         val parentFragment = parentFragment
         if (parentFragment is GameFragment) {
+
+            println("----------------got GameFragment as parentFragment")
+
             parentFragment.checkLetter(button.text.toString())
+            parentFragment.useTurn()
+        }
+        else{
+            println("----------------did not got GameFragment as parentFragment")
         }
     }
 }
