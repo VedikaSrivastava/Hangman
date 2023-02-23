@@ -1,16 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <TextView
+        android:id="@+id/text_view_word"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:layout_margin="16dp" />
+
+    <TextView
+        android:id="@+id/text_view_remaining"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:layout_margin="16dp" />
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/image_view_hangman"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:src="@drawable/hangman1"
+        android:layout_margin="16dp" />
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="250dp"
-        app:srcCompat="@drawable/hangman1" />
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_horizontal"
+        android:padding="16dp">
 
+        <Button
+            android:id="@+id/button_hint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Hint" />
 
+        <Button
+            android:id="@+id/button_new_word"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="New Word" />
+
+    </LinearLayout>
 </LinearLayout>
