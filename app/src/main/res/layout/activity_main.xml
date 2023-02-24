@@ -4,24 +4,25 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/fragment_game"
-        android:name="com.example.hangman.GameFragment"
-        android:layout_width="match_parent"
-        android:layout_height="250dp"
-        android:layout_weight="1" />
-
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/fragment_choose_letter"
-        android:name="com.example.hangman.ChooseLetterFragment"
-        android:layout_width="match_parent"
-        android:layout_height="250dp"
-        android:layout_weight="1" />
-
-    <androidx.fragment.app.FragmentContainerView
+    <FrameLayout
         android:id="@+id/fragment_hint"
         android:name="com.example.hangman.HintFragment"
         android:layout_width="match_parent"
-        android:layout_height="100dp" />
+        android:layout_height="wrap_content" />
+    <FrameLayout
+        android:id="@+id/fragment_game"
+        android:name="com.example.hangman.GameFragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1" />
+
+    <FrameLayout
+        android:id="@+id/fragment_choose_letter"
+        android:name="com.example.hangman.ChooseLetterFragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1" />
+
+
 
 </LinearLayout>
