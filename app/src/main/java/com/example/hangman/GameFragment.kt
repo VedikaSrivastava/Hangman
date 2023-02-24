@@ -25,6 +25,12 @@ class GameFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_game, container, false)
+
+        return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         wordTextView = view.findViewById(R.id.text_view_word)
         remainingTextView = view.findViewById(R.id.text_view_remaining)
         hangmanImageView = view.findViewById(R.id.image_view_hangman)
@@ -42,9 +48,7 @@ class GameFragment : Fragment() {
         updateWordView()
         updateRemainingView()
 
-        return view
     }
-
     fun checkLetter(letter: String) {
         // Add the guessed letter to the set and update the display
         guessedLetters += letter
@@ -90,11 +94,14 @@ class GameFragment : Fragment() {
     private fun updateWordView() {
         val wordView = StringBuilder()
         for (letter in chosenWord) {
-            if (guessedLetters.contains(letter.toString())) {
+            println("------------------updateWordView- letter: $letter")
+            if (guessedLetters.contains(letter.toString().uppercase())) {
                 wordView.append(letter)
                 wordView.append(' ')
+                println("------------------updateWordView- if wordView: $wordView")
             } else {
                 wordView.append("_ ")
+                println("------------------updateWordView- else wordView: $wordView")
             }
         }
         wordTextView.text = wordView.toString()

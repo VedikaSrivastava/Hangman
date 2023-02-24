@@ -7,11 +7,19 @@ import android.view.ViewGroup
 import android.widget.Button
 import androidx.fragment.app.Fragment
 
-class ChooseLetterFragment(gameFragment: GameFragment) : Fragment() {
+class ChooseLetterFragment(val gameFragment: GameFragment) : Fragment() {
     private lateinit var letterButtons: Array<Button>
+    //val gameFragment = GameFragment()
+
+//    companion object {
+//        fun newInstance(): ChooseLetterFragment {
+//            return ChooseLetterFragment(gameFragment)
+//        }
+//    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_choose_letter, container, false)
+
         letterButtons = arrayOf(
             view.findViewById(R.id.button_a),
             view.findViewById(R.id.button_b),
@@ -52,13 +60,15 @@ class ChooseLetterFragment(gameFragment: GameFragment) : Fragment() {
         // Disable the button to prevent selecting it again
         button.isEnabled = false
         // Pass the selected letter to the main game fragment
-        val parentFragment = parentFragment
+        val parentFragment = GameFragment()
+
+
         if (parentFragment is GameFragment) {
 
             println("----------------got GameFragment as parentFragment")
 
-            parentFragment.checkLetter(button.text.toString())
-            parentFragment.useTurn()
+            gameFragment.checkLetter(button.text.toString())
+            gameFragment.useTurn()
         }
         else{
             println("----------------did not got GameFragment as parentFragment")

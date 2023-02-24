@@ -15,8 +15,8 @@ class MainActivity : AppCompatActivity() {
 
         val chooseLetterFragment = ChooseLetterFragment(gameFragment)
         fragmentTransaction.add(R.id.fragment_choose_letter, chooseLetterFragment)
-//      val hintFragment = HintFragment()
-//      fragmentTransaction.add(R.id.fragment_hint, hintFragment)
+        val hintFragment = HintFragment()
+        fragmentTransaction.add(R.id.fragment_hint, hintFragment)
         fragmentTransaction.commit()
 
     }
