@@ -21,7 +21,7 @@ class GameFragment : Fragment() {
     private lateinit var letters: List<String>
     private lateinit var chosenWord: String
     private var guessedLetters: MutableSet<String> = mutableSetOf()
-    private var remainingTurns = 6
+    private var remainingTurns = 7
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_game, container, false)
@@ -45,8 +45,8 @@ class GameFragment : Fragment() {
         println("--------------------- guessedLetters: "+ guessedLetters)
 
         // Display the initial state of the game
-        updateWordView()
-        updateRemainingView()
+          updateWordView()
+          updateRemainingView()
 
     }
     fun checkLetter(letter: String) {
@@ -84,7 +84,7 @@ class GameFragment : Fragment() {
 
     private fun chooseWord(): String {
         val words = resources.getStringArray(R.array.words)
-        return words.random().toLowerCase()
+        return words.random()
     }
 
     private fun isWordGuessed(): Boolean {
@@ -95,7 +95,7 @@ class GameFragment : Fragment() {
         val wordView = StringBuilder()
         for (letter in chosenWord) {
             println("------------------updateWordView- letter: $letter")
-            if (guessedLetters.contains(letter.toString().uppercase())) {
+            if (guessedLetters.contains(letter.toString())) {
                 wordView.append(letter)
                 wordView.append(' ')
                 println("------------------updateWordView- if wordView: $wordView")
