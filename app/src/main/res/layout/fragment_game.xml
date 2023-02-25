@@ -27,24 +27,5 @@
         android:layout_margin="16dp"
         android:src="@drawable/hangman1" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_horizontal"
-        android:padding="16dp">
 
-        <Button
-            android:id="@+id/button_hint"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Hint" />
-
-        <Button
-            android:id="@+id/button_new_word"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="New Word" />
-
-    </LinearLayout>
 </LinearLayout>

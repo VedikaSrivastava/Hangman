@@ -19,7 +19,7 @@ class GameFragment : Fragment() {
     private lateinit var remainingTextView: TextView
     private lateinit var hangmanImageView: ImageView
     private lateinit var letters: List<String>
-    private lateinit var chosenWord: String
+    lateinit var chosenWord: String
     private var guessedLetters: MutableSet<String> = mutableSetOf()
     private var remainingTurns = 7
 
@@ -67,10 +67,22 @@ class GameFragment : Fragment() {
         remainingTurns--
         updateRemainingView()
         if (remainingTurns == 0) {
-            hangmanImageView.setImageResource(R.drawable.hangman6)
-        } else {
-            val resourceId = resources.getIdentifier("hangman${6 - remainingTurns}", "drawable", requireContext().packageName)
-            hangmanImageView.setImageResource(resourceId)
+            hangmanImageView.setImageResource(R.drawable.hangman8)
+        }
+        else {
+            for (letter in chosenWord) {
+                println("------------------updateWordView- letter: $letter")
+                if (guessedLetters.contains(letter.toString()) == false) {
+                    val resourceId = resources.getIdentifier(
+                        "hangman${8 - remainingTurns}",
+                        "drawable",
+                        requireContext().packageName
+                    )
+                    hangmanImageView.setImageResource(resourceId)
+                }
+//                val resourceId = resources.getIdentifier("hangman${8 - remainingTurns}", "drawable", requireContext().packageName)
+//                hangmanImageView.setImageResource(resourceId)
+            }
         }
     }
 
@@ -78,8 +90,8 @@ class GameFragment : Fragment() {
         Toast.makeText(requireContext(), hint, Toast.LENGTH_SHORT).show()
     }
 
-    fun getRemainingLetters(): Set<String> {
-        return letters.toSet() - guessedLetters
+    fun getRemainingLetters(): Set<Any> {
+        return chosenWord.toSet() - guessedLetters
     }
 
     private fun chooseWord(): String {
@@ -113,5 +125,8 @@ class GameFragment : Fragment() {
         remainingTextView.text = remainingView
         println("--------------------- remainingTextView: "+ remainingView)
 
+    }
+    fun incrementrRemainingTurns(){
+        remainingTurns++
     }
 }

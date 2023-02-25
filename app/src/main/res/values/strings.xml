@@ -2,10 +2,10 @@
     <string name="app_name">Hangman</string>
     <string name="button_hint">Hint</string>
     <string name="img_view_cnt_des">View to see the Hangman game progressing</string>
-    <string name="a">A</string>
-    <string name="b">B</string>
-    <string name="c">C</string>
-    <string name="d">D</string>
-    <string name="e">E</string>
+    <string name="a">READING</string>
+    <string name="b">ANDROID</string>
+    <string name="c">BROTHER</string>
+    <string name="d">DIAMOND</string>
+    <string name="e">FREEDOM</string>
 
 </resources>
