@@ -1,7 +1,10 @@
 package com.example.hangman
 
 import android.content.Context
+import android.graphics.Color
+import android.graphics.PorterDuff
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,21 +18,19 @@ public class ChooseLetterFragment() : Fragment() {
     private lateinit var hintButton: Button
     private lateinit var restartButton: Button
     private var hintCount = 0
-
+    private var lettersClicked: MutableSet<String> = mutableSetOf()
+    private var alphabets = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    var TAG = "testing"
 
     var gameFragment = GameFragment()
-
-//    companion object {
-//        fun newInstance(): ChooseLetterFragment {
-//            return ChooseLetterFragment(gameFragment)
-//        }
-//    }
 
     init {
 
     }
     constructor(gameFragment: GameFragment) : this() {
         this.gameFragment = gameFragment
+        lettersClicked = gameFragment.lettersClicked
+        hintCount = gameFragment.hintCount
     }
 
     private var listener: RestartListener? = null
@@ -44,7 +45,6 @@ public class ChooseLetterFragment() : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_choose_letter, container, false)
-
         letterButtons = arrayOf(
             view.findViewById(R.id.button_a),
             view.findViewById(R.id.button_b),
@@ -74,6 +74,9 @@ public class ChooseLetterFragment() : Fragment() {
             view.findViewById(R.id.button_z)
             // and so on for all the letter buttons
         )
+
+        updateKeyboard()
+
         for (button in letterButtons) {
 
             button.setOnClickListener { selectLetter(button) }
@@ -102,6 +105,13 @@ public class ChooseLetterFragment() : Fragment() {
     private fun selectLetter(button: Button) {
         // Disable the button to prevent selecting it again
         button.isEnabled = false
+        button.setBackgroundColor(Color.LTGRAY)
+        button.setTextColor(Color.GRAY)
+        button.setClickable(false)
+
+        //Store selected letter
+        lettersClicked.add(button.text.toString())
+
         // Pass the selected letter to the main game fragment
         val parentFragment = GameFragment()
 
@@ -210,5 +220,25 @@ public class ChooseLetterFragment() : Fragment() {
             }
         }
         hintCount++
+        gameFragment.usedHint()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putStringArrayList("lettersClicked",ArrayList(lettersClicked))
+        outState.putInt("hintCount",hintCount)
+    }
+
+    private fun updateKeyboard() {
+        Log.d(TAG, "updateKeyboard: "+gameFragment.lettersClicked.size)
+        hintCount = gameFragment.hintCount
+        lettersClicked = gameFragment.lettersClicked
+        for (l in gameFragment.lettersClicked){
+            Log.d(TAG, "updateKeyboard: "+l)
+            letterButtons[alphabets.indexOf(l)].isEnabled = false
+            letterButtons[alphabets.indexOf(l)].setBackgroundColor(Color.LTGRAY)
+            letterButtons[alphabets.indexOf(l)].setTextColor(Color.GRAY)
+            letterButtons[alphabets.indexOf(l)].setClickable(false)
+        }
     }
 }

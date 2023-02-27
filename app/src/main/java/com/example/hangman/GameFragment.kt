@@ -14,18 +14,26 @@ import androidx.fragment.app.Fragment
 private const val TAG = "CrimeListFragment"
 class GameFragment : Fragment() {
 
-
     private lateinit var wordTextView: TextView
     private lateinit var remainingTextView: TextView
     private lateinit var hangmanImageView: ImageView
     private lateinit var letters: Array<String>
-    lateinit var chosenWord: String
+    var chosenWord: String = ""
     private var guessedLetters: MutableSet<String> = mutableSetOf()
     private var remainingTurns = 0
+    public var hintCount = 0
+    public var lettersClicked: MutableSet<String> = mutableSetOf()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_game, container, false)
+        wordTextView = view.findViewById(R.id.text_view_word)
+        remainingTextView = view.findViewById(R.id.text_view_remaining)
+        hangmanImageView = view.findViewById(R.id.image_view_hangman)
 
+        if(savedInstanceState!=null)
+        {
+            retrieveState(savedInstanceState)
+        }
         return view
     }
 
@@ -47,6 +55,7 @@ class GameFragment : Fragment() {
             remainingTurns = 7
         }
 
+
         wordTextView = view.findViewById(R.id.text_view_word)
         remainingTextView = view.findViewById(R.id.text_view_remaining)
         hangmanImageView = view.findViewById(R.id.image_view_hangman)
@@ -59,6 +68,11 @@ class GameFragment : Fragment() {
 
     fun checkLetter(letter: String) {
         // Add the guessed letter to the set and update the display
+        if(chosenWord.contains(letter))
+        {
+            incrementRemainingTurns()
+        }
+        lettersClicked.add(letter)
         guessedLetters += letter
         println("--------------------- guessedLetters: "+ guessedLetters)
         updateWordView()
@@ -113,7 +127,6 @@ class GameFragment : Fragment() {
 
     private fun updateWordView() {
         val wordView = StringBuilder()
-        Log.d("chosenWord",chosenWord)
         for (letter in chosenWord) {
             println("------------------updateWordView- letter: $letter")
             if (guessedLetters.contains(letter.toString())) {
@@ -154,6 +167,8 @@ class GameFragment : Fragment() {
         outState.putString("chosenWord",chosenWord)
         outState.putStringArrayList("guessedLetters",ArrayList(guessedLetters))
         outState.putInt("remainingTurns",remainingTurns)
+        outState.putStringArrayList("lettersClicked",ArrayList(lettersClicked))
+        outState.putInt("hintCount",hintCount)
         Log.d("turnsout", remainingTurns.toString())
     }
 
@@ -162,12 +177,13 @@ class GameFragment : Fragment() {
         chosenWord = inState.getString("chosenWord").toString()
         guessedLetters = inState.getStringArrayList("guessedLetters")?.toMutableSet() ?:  mutableSetOf()
         remainingTurns = inState.getInt("remainingTurns")
+        lettersClicked = inState.getStringArrayList("lettersClicked")?.toMutableSet() ?:  mutableSetOf()
+        hintCount = inState.getInt("hintCount")
         Log.d("turns", remainingTurns.toString())
     }
 
-    override fun onDestroy() {
-        Log.d("turns", "Destroyed")
-        super.onDestroy()
+    fun usedHint() {
+        hintCount++
     }
 
 }

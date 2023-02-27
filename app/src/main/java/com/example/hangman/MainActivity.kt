@@ -25,19 +25,20 @@ class MainActivity : AppCompatActivity(), ChooseLetterFragment.RestartListener {
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
 
-        var fragment = supportFragmentManager.findFragmentById(R.id.fragment_game)
+        var fragment = fragmentManager.findFragmentById(R.id.fragment_game)
         if (fragment == null) {
             gameFragment = GameFragment()
             fragmentTransaction.add(R.id.fragment_game, gameFragment!!)
-        }
-
-        var secondFragment = supportFragmentManager.findFragmentById(R.id.fragment_choose_letter)
-        if (secondFragment == null) {
             chooseLetterFragment = ChooseLetterFragment(gameFragment!!)
             fragmentTransaction.add(R.id.fragment_choose_letter, chooseLetterFragment!!)
+            fragmentTransaction.commit()
         }
-
-        fragmentTransaction.commit()
+        else{
+            val f = fragmentManager.findFragmentById(R.id.fragment_choose_letter)
+            fragmentTransaction.remove(f!! as ChooseLetterFragment)
+            chooseLetterFragment = ChooseLetterFragment(fragment!! as GameFragment)
+            fragmentTransaction.add(R.id.fragment_choose_letter, chooseLetterFragment!!)
+            fragmentTransaction.commit()
+        }
     }
-
 }
