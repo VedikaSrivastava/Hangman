@@ -1,41 +1,61 @@
 package com.example.hangman
 
+import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
+import android.graphics.Color
+import android.graphics.PorterDuff
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import kotlinx.android.synthetic.main.fragment_choose_letter.*
 
 
-class ChooseLetterFragment(val gameFragment: GameFragment) : Fragment() {
+public class ChooseLetterFragment() : Fragment() {
     private lateinit var letterButtons: Array<Button>
     private lateinit var hintButton: Button
     private lateinit var restartButton: Button
-    private var hintCount = 0
-    //val gameFragment = GameFragment()
+    private lateinit var resultLayout: LinearLayout
+    private lateinit var choose: LinearLayout
+    private lateinit var keyboard: LinearLayout
+    private lateinit var wonView: TextView
+    private lateinit var lostView: TextView
 
-//    companion object {
-//        fun newInstance(): ChooseLetterFragment {
-//            return ChooseLetterFragment(gameFragment)
-//        }
-//    }
+    private var hintCount = 0
+    private var lettersClicked: MutableSet<String> = mutableSetOf()
+    private var alphabets = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    var TAG = "testing"
+
+    var gameFragment = GameFragment()
+
+    init {
+
+    }
+    constructor(gameFragment: GameFragment) : this() {
+        this.gameFragment = gameFragment
+        lettersClicked = gameFragment.lettersClicked
+        hintCount = gameFragment.hintCount
+    }
 
     private var listener: RestartListener? = null
 
     interface RestartListener {
         fun restartApp()
     }
+
+    @SuppressLint("MissingInflatedId")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_choose_letter, container, false)
-
         letterButtons = arrayOf(
             view.findViewById(R.id.button_a),
             view.findViewById(R.id.button_b),
@@ -65,6 +85,9 @@ class ChooseLetterFragment(val gameFragment: GameFragment) : Fragment() {
             view.findViewById(R.id.button_z)
             // and so on for all the letter buttons
         )
+
+        updateKeyboard()
+
         for (button in letterButtons) {
 
             button.setOnClickListener { selectLetter(button) }
@@ -76,6 +99,14 @@ class ChooseLetterFragment(val gameFragment: GameFragment) : Fragment() {
         restartButton.setOnClickListener {
             listener?.restartApp()
         }
+
+        resultLayout = view.findViewById(R.id.result)
+        wonView = view.findViewById(R.id.wonText)
+        lostView = view.findViewById(R.id.lostText)
+        keyboard = view.findViewById(R.id.keyboard)
+        choose = view.findViewById(R.id.choose)
+
+        checkWinCondition()
 
         return view
     }
@@ -93,6 +124,13 @@ class ChooseLetterFragment(val gameFragment: GameFragment) : Fragment() {
     private fun selectLetter(button: Button) {
         // Disable the button to prevent selecting it again
         button.isEnabled = false
+        button.setBackgroundColor(Color.LTGRAY)
+        button.setTextColor(Color.GRAY)
+        button.setClickable(false)
+
+        //Store selected letter
+        lettersClicked.add(button.text.toString())
+
         // Pass the selected letter to the main game fragment
         val parentFragment = GameFragment()
 
@@ -103,8 +141,28 @@ class ChooseLetterFragment(val gameFragment: GameFragment) : Fragment() {
 
             gameFragment.checkLetter(button.text.toString())
             gameFragment.useTurn()
+            checkWinCondition()
         } else {
             println("----------------did not got GameFragment as parentFragment")
+        }
+    }
+
+    private fun checkWinCondition() {
+        when (gameFragment.checkWinCondition()){
+            1 -> {
+                //Game won
+                keyboard.visibility = View.GONE
+                choose.visibility = View.GONE
+                resultLayout.visibility = View.VISIBLE
+                wonView.visibility = View.VISIBLE
+            }
+            -1 -> {
+                //Game lost
+                choose.visibility = View.GONE
+                keyboard.visibility = View.GONE
+                resultLayout.visibility = View.VISIBLE
+                lostView.visibility = View.VISIBLE
+            }
         }
     }
 
@@ -187,8 +245,7 @@ class ChooseLetterFragment(val gameFragment: GameFragment) : Fragment() {
                 for (button in buttonsEnabled) {
                     if (vowels.contains(button.text.toString())) {
                         button.performClick()
-                        gameFragment.incrementrRemainingTurns()
-
+                        gameFragment.incrementRemainingTurns()
                     }
                 }
                 // Deduct a turn for using the hint
@@ -201,5 +258,25 @@ class ChooseLetterFragment(val gameFragment: GameFragment) : Fragment() {
             }
         }
         hintCount++
+        gameFragment.usedHint()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putStringArrayList("lettersClicked",ArrayList(lettersClicked))
+        outState.putInt("hintCount",hintCount)
+    }
+
+    private fun updateKeyboard() {
+        Log.d(TAG, "updateKeyboard: "+gameFragment.lettersClicked.size)
+        hintCount = gameFragment.hintCount
+        lettersClicked = gameFragment.lettersClicked
+        for (l in gameFragment.lettersClicked){
+            Log.d(TAG, "updateKeyboard: "+l)
+            letterButtons[alphabets.indexOf(l)].isEnabled = false
+            letterButtons[alphabets.indexOf(l)].setBackgroundColor(Color.LTGRAY)
+            letterButtons[alphabets.indexOf(l)].setTextColor(Color.GRAY)
+            letterButtons[alphabets.indexOf(l)].setClickable(false)
+        }
     }
 }
