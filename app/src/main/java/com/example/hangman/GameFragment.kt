@@ -18,10 +18,10 @@ class GameFragment : Fragment() {
     private lateinit var wordTextView: TextView
     private lateinit var remainingTextView: TextView
     private lateinit var hangmanImageView: ImageView
-    private lateinit var letters: List<String>
+    private lateinit var letters: Array<String>
     lateinit var chosenWord: String
     private var guessedLetters: MutableSet<String> = mutableSetOf()
-    private var remainingTurns = 7
+    private var remainingTurns = 0
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_game, container, false)
@@ -31,24 +31,32 @@ class GameFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        if(savedInstanceState!=null)
+        {
+            retrieveState(savedInstanceState)
+        }
+        else{
+            // Load the word list and choose a random word
+            letters = resources.getStringArray(R.array.words)
+            chosenWord = chooseWord()
+            println("--------------------- chosenWord: " + chosenWord)
+
+            // Initialize the guessed letters set
+            guessedLetters = mutableSetOf()
+            println("--------------------- guessedLetters: " + guessedLetters)
+            remainingTurns = 7
+        }
+
         wordTextView = view.findViewById(R.id.text_view_word)
         remainingTextView = view.findViewById(R.id.text_view_remaining)
         hangmanImageView = view.findViewById(R.id.image_view_hangman)
 
-        // Load the word list and choose a random word
-        letters = resources.getStringArray(R.array.words).toList()
-        chosenWord = chooseWord()
-        println("--------------------- chosenWord: "+ chosenWord)
-
-        // Initialize the guessed letters set
-        guessedLetters = mutableSetOf()
-        println("--------------------- guessedLetters: "+ guessedLetters)
-
         // Display the initial state of the game
-          updateWordView()
-          updateRemainingView()
-
+        updateWordView()
+        updateRemainingView()
+        updateHangmanView()
     }
+
     fun checkLetter(letter: String) {
         // Add the guessed letter to the set and update the display
         guessedLetters += letter
@@ -124,9 +132,41 @@ class GameFragment : Fragment() {
         val remainingView = "Remaining turns: $remainingTurns"
         remainingTextView.text = remainingView
         println("--------------------- remainingTextView: "+ remainingView)
-
     }
-    fun incrementrRemainingTurns(){
+
+    private fun updateHangmanView(){
+        print("-------------------remainingTurns:"+remainingTurns)
+        val resourceId = resources.getIdentifier(
+            "hangman${8 - remainingTurns}",
+            "drawable",
+            requireContext().packageName
+        )
+        hangmanImageView.setImageResource(resourceId)
+    }
+
+    fun incrementRemainingTurns(){
         remainingTurns++
     }
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putStringArray("letters", letters)
+        outState.putString("chosenWord",chosenWord)
+        outState.putStringArrayList("guessedLetters",ArrayList(guessedLetters))
+        outState.putInt("remainingTurns",remainingTurns)
+        Log.d("turnsout", remainingTurns.toString())
+    }
+
+    private fun retrieveState(inState: Bundle) {
+        letters = inState.getStringArray("letters") as Array<String>
+        chosenWord = inState.getString("chosenWord").toString()
+        guessedLetters = inState.getStringArrayList("guessedLetters")?.toMutableSet() ?:  mutableSetOf()
+        remainingTurns = inState.getInt("remainingTurns")
+        Log.d("turns", remainingTurns.toString())
+    }
+
+    override fun onDestroy() {
+        Log.d("turns", "Destroyed")
+        super.onDestroy()
+    }
+
 }

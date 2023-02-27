@@ -1,7 +1,6 @@
 package com.example.hangman
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,12 +10,14 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 
 
-class ChooseLetterFragment(val gameFragment: GameFragment) : Fragment() {
+public class ChooseLetterFragment() : Fragment() {
     private lateinit var letterButtons: Array<Button>
     private lateinit var hintButton: Button
     private lateinit var restartButton: Button
     private var hintCount = 0
-    //val gameFragment = GameFragment()
+
+
+    var gameFragment = GameFragment()
 
 //    companion object {
 //        fun newInstance(): ChooseLetterFragment {
@@ -24,11 +25,19 @@ class ChooseLetterFragment(val gameFragment: GameFragment) : Fragment() {
 //        }
 //    }
 
+    init {
+
+    }
+    constructor(gameFragment: GameFragment) : this() {
+        this.gameFragment = gameFragment
+    }
+
     private var listener: RestartListener? = null
 
     interface RestartListener {
         fun restartApp()
     }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -187,7 +196,7 @@ class ChooseLetterFragment(val gameFragment: GameFragment) : Fragment() {
                 for (button in buttonsEnabled) {
                     if (vowels.contains(button.text.toString())) {
                         button.performClick()
-                        gameFragment.incrementrRemainingTurns()
+                        gameFragment.incrementRemainingTurns()
 
                     }
                 }
