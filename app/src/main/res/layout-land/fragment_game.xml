@@ -5,11 +5,22 @@
     android:orientation="vertical"
     android:weightSum="10">
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.75"
+        android:id="@+id/timer"
+        android:gravity="left"
+        android:text="text"
+        android:layout_marginTop="5dp"
+        android:paddingHorizontal="20dp"
+        android:textStyle="bold"/>
+
     <ImageView
         android:id="@+id/image_view_hangman"
         android:layout_width="290dp"
         android:layout_height="0dp"
-        android:layout_weight="7"
+        android:layout_weight="6.25"
         android:layout_gravity="center"
         android:layout_marginTop="10dp"
         android:src="@drawable/hangman1" />

@@ -1,5 +1,6 @@
 package com.example.hangman
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.graphics.PorterDuff
@@ -9,14 +10,23 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import kotlinx.android.synthetic.main.fragment_choose_letter.*
 
 
 public class ChooseLetterFragment() : Fragment() {
     private lateinit var letterButtons: Array<Button>
     private lateinit var hintButton: Button
     private lateinit var restartButton: Button
+    private lateinit var resultLayout: LinearLayout
+    private lateinit var choose: LinearLayout
+    private lateinit var keyboard: LinearLayout
+    private lateinit var wonView: TextView
+    private lateinit var lostView: TextView
+
     private var hintCount = 0
     private var lettersClicked: MutableSet<String> = mutableSetOf()
     private var alphabets = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -39,6 +49,7 @@ public class ChooseLetterFragment() : Fragment() {
         fun restartApp()
     }
 
+    @SuppressLint("MissingInflatedId")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -89,6 +100,14 @@ public class ChooseLetterFragment() : Fragment() {
             listener?.restartApp()
         }
 
+        resultLayout = view.findViewById(R.id.result)
+        wonView = view.findViewById(R.id.wonText)
+        lostView = view.findViewById(R.id.lostText)
+        keyboard = view.findViewById(R.id.keyboard)
+        choose = view.findViewById(R.id.choose)
+
+        checkWinCondition()
+
         return view
     }
 
@@ -122,8 +141,28 @@ public class ChooseLetterFragment() : Fragment() {
 
             gameFragment.checkLetter(button.text.toString())
             gameFragment.useTurn()
+            checkWinCondition()
         } else {
             println("----------------did not got GameFragment as parentFragment")
+        }
+    }
+
+    private fun checkWinCondition() {
+        when (gameFragment.checkWinCondition()){
+            1 -> {
+                //Game won
+                keyboard.visibility = View.GONE
+                choose.visibility = View.GONE
+                resultLayout.visibility = View.VISIBLE
+                wonView.visibility = View.VISIBLE
+            }
+            -1 -> {
+                //Game lost
+                choose.visibility = View.GONE
+                keyboard.visibility = View.GONE
+                resultLayout.visibility = View.VISIBLE
+                lostView.visibility = View.VISIBLE
+            }
         }
     }
 
@@ -207,7 +246,6 @@ public class ChooseLetterFragment() : Fragment() {
                     if (vowels.contains(button.text.toString())) {
                         button.performClick()
                         gameFragment.incrementRemainingTurns()
-
                     }
                 }
                 // Deduct a turn for using the hint

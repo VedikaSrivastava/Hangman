@@ -49,6 +49,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/keyboard"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:orientation="vertical"
@@ -324,6 +325,37 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:id="@+id/result"
+        android:layout_height="0dp"
+        android:layout_weight="12"
+        android:orientation="vertical"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="30dp"
+        android:layout_marginHorizontal="5dp"
+        android:gravity="center"
+        >
+
+        <TextView
+            android:id="@+id/wonText"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="Game Over!! You Won!!"
+            android:drawableRight="@drawable/celebration"
+            android:gravity="center"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/lostText"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="Game Over!! You Lost!!  "
+            android:drawableRight="@drawable/rip"
+            android:gravity="center"
+            android:visibility="gone"/>
+
+    </LinearLayout>
 
 <!--    <GridLayout-->
 <!--        android:layout_width="match_parent"-->

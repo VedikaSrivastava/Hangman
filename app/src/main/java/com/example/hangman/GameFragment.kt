@@ -1,6 +1,7 @@
 package com.example.hangman
 
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -17,18 +18,21 @@ class GameFragment : Fragment() {
     private lateinit var wordTextView: TextView
     private lateinit var remainingTextView: TextView
     private lateinit var hangmanImageView: ImageView
+    private lateinit var timerView: TextView
     private lateinit var letters: Array<String>
     var chosenWord: String = ""
     private var guessedLetters: MutableSet<String> = mutableSetOf()
     private var remainingTurns = 0
-    public var hintCount = 0
-    public var lettersClicked: MutableSet<String> = mutableSetOf()
+    var hintCount = 0
+    var lettersClicked: MutableSet<String> = mutableSetOf()
+    var timer = 30000
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_game, container, false)
         wordTextView = view.findViewById(R.id.text_view_word)
         remainingTextView = view.findViewById(R.id.text_view_remaining)
         hangmanImageView = view.findViewById(R.id.image_view_hangman)
+        timerView = view.findViewById(R.id.timer)
 
         if(savedInstanceState!=null)
         {
@@ -59,11 +63,31 @@ class GameFragment : Fragment() {
         wordTextView = view.findViewById(R.id.text_view_word)
         remainingTextView = view.findViewById(R.id.text_view_remaining)
         hangmanImageView = view.findViewById(R.id.image_view_hangman)
+        timerView = view.findViewById(R.id.timer)
 
         // Display the initial state of the game
         updateWordView()
         updateRemainingView()
         updateHangmanView()
+        startTimer()
+    }
+
+    private fun startTimer() {
+        object : CountDownTimer(timer.toLong(), 1000) {
+
+            // Callback function, fired on regular interval
+            override fun onTick(millisUntilFinished: Long) {
+                timer = millisUntilFinished.toInt()
+                timerView.setText("Seconds remaining: " + millisUntilFinished / 1000)
+            }
+
+            // Callback function, fired
+            // when the time is up
+            override fun onFinish() {
+                timerView.setText("Time Up!")
+                Toast.makeText(requireContext(), "Time up!!", Toast.LENGTH_SHORT).show()
+            }
+        }.start()
     }
 
     fun checkLetter(letter: String) {
@@ -76,14 +100,28 @@ class GameFragment : Fragment() {
         guessedLetters += letter
         println("--------------------- guessedLetters: "+ guessedLetters)
         updateWordView()
-
-        // Check if the game is won or lost
-        if (isWordGuessed()) {
-            Toast.makeText(requireContext(), "You won!", Toast.LENGTH_SHORT).show()
-        } else if (remainingTurns == 0) {
-            Toast.makeText(requireContext(), "You lost! The word was $chosenWord.", Toast.LENGTH_SHORT).show()
-        }
     }
+
+    fun checkWinCondition(): Int {
+        // Check if the game is won or lost
+        Log.d(TAG, "checkWinCondition: "+timer)
+        if (isWordGuessed()) {
+//            Toast.makeText(requireContext(), "You won!", Toast.LENGTH_SHORT).show()
+            return 1
+        } else if (remainingTurns == 0 || timer<1000) {
+//            Toast.makeText(requireContext(), "You lost! The word was $chosenWord.", Toast.LENGTH_SHORT).show()
+            return -1
+        }
+        return 0
+    }
+
+//    private fun lostGameOver() {
+//        TODO("Change UI to show they won: Not yet implemented")
+//    }
+//
+//    private fun wonGameOver() {
+//        TODO("Change UI to show they lost: Not yet implemented")
+//    }
 
     fun useTurn() {
         remainingTurns--
@@ -106,6 +144,7 @@ class GameFragment : Fragment() {
 //                hangmanImageView.setImageResource(resourceId)
             }
         }
+        checkWinCondition()
     }
 
     fun showHint(hint: String) {
@@ -169,6 +208,7 @@ class GameFragment : Fragment() {
         outState.putInt("remainingTurns",remainingTurns)
         outState.putStringArrayList("lettersClicked",ArrayList(lettersClicked))
         outState.putInt("hintCount",hintCount)
+        outState.putInt("timer",timer)
         Log.d("turnsout", remainingTurns.toString())
     }
 
@@ -179,6 +219,7 @@ class GameFragment : Fragment() {
         remainingTurns = inState.getInt("remainingTurns")
         lettersClicked = inState.getStringArrayList("lettersClicked")?.toMutableSet() ?:  mutableSetOf()
         hintCount = inState.getInt("hintCount")
+        timer = inState.getInt("timer")
         Log.d("turns", remainingTurns.toString())
     }
 
