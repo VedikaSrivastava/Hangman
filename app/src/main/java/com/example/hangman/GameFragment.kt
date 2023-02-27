@@ -113,6 +113,7 @@ class GameFragment : Fragment() {
 
     private fun updateWordView() {
         val wordView = StringBuilder()
+        Log.d("chosenWord",chosenWord)
         for (letter in chosenWord) {
             println("------------------updateWordView- letter: $letter")
             if (guessedLetters.contains(letter.toString())) {
