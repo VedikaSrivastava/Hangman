@@ -10,7 +10,7 @@ import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_choose_letter.*
 
 class HintFragment(gameFragment: GameFragment) : Fragment() {
-    private lateinit var hintButton: Button
+    lateinit var hintButton: Button
     private var hintCount = 0
     val buttons = arrayOf(button_a, button_b, button_c, button_d, button_e, button_f, button_g, button_h, button_i,button_j, button_k, button_l, button_m, button_n, button_o, button_p, button_q, button_r, button_s, button_t, button_u, button_v, button_w, button_x, button_y, button_z)
 

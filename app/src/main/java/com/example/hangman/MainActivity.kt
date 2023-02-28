@@ -9,8 +9,8 @@ import androidx.fragment.app.Fragment
 
 class MainActivity : AppCompatActivity(), ChooseLetterFragment.RestartListener {
 
-    private var gameFragment: GameFragment? = null
-    private var chooseLetterFragment: ChooseLetterFragment? = null
+    var gameFragment: GameFragment? = null
+    var chooseLetterFragment: ChooseLetterFragment? = null
 
     override fun restartApp() {
         val intent = Intent(this, MainActivity::class.java)

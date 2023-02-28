@@ -21,14 +21,14 @@ public class ChooseLetterFragment() : Fragment() {
     private lateinit var letterButtons: Array<Button>
     private lateinit var hintButton: Button
     private lateinit var restartButton: Button
-    private lateinit var resultLayout: LinearLayout
+    lateinit var resultLayout: LinearLayout
     private lateinit var choose: LinearLayout
     private lateinit var keyboard: LinearLayout
-    private lateinit var wonView: TextView
-    private lateinit var lostView: TextView
+    lateinit var wonView: TextView
+    lateinit var lostView: TextView
 
     private var hintCount = 0
-    private var lettersClicked: MutableSet<String> = mutableSetOf()
+    var lettersClicked: MutableSet<String> = mutableSetOf()
     private var alphabets = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
     var TAG = "testing"
 
@@ -121,7 +121,7 @@ public class ChooseLetterFragment() : Fragment() {
         listener = null
     }
 
-    private fun selectLetter(button: Button) {
+    fun selectLetter(button: Button) {
         // Disable the button to prevent selecting it again
         button.isEnabled = false
         button.setBackgroundColor(Color.LTGRAY)
@@ -147,7 +147,7 @@ public class ChooseLetterFragment() : Fragment() {
         }
     }
 
-    private fun checkWinCondition() {
+    fun checkWinCondition() {
         when (gameFragment.checkWinCondition()){
             1 -> {
                 //Game won
@@ -166,7 +166,7 @@ public class ChooseLetterFragment() : Fragment() {
         }
     }
 
-    private fun showHint() {
+    fun showHint() {
 //        val gameFragment = parentFragment as GameFragment
         when (hintCount) {
             0 -> {
