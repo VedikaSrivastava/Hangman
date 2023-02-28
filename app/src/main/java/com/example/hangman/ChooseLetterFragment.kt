@@ -26,6 +26,7 @@ public class ChooseLetterFragment() : Fragment() {
     private lateinit var keyboard: LinearLayout
     lateinit var wonView: TextView
     lateinit var lostView: TextView
+    private lateinit var hintText: TextView
 
     private var hintCount = 0
     var lettersClicked: MutableSet<String> = mutableSetOf()
@@ -93,7 +94,11 @@ public class ChooseLetterFragment() : Fragment() {
             button.setOnClickListener { selectLetter(button) }
         }
         hintButton = view.findViewById(R.id.button_hint)
-        hintButton.setOnClickListener { showHint() }
+        hintButton.setOnClickListener {
+            showHint()
+            hintCount++
+            gameFragment.usedHint()
+        }
 
         restartButton = view.findViewById(R.id.button_new_word)
         restartButton.setOnClickListener {
@@ -105,10 +110,18 @@ public class ChooseLetterFragment() : Fragment() {
         lostView = view.findViewById(R.id.lostText)
         keyboard = view.findViewById(R.id.keyboard)
         choose = view.findViewById(R.id.choose)
+        hintText = view.findViewById(R.id.text_hint)
+        updateHintView()
 
         checkWinCondition()
 
         return view
+    }
+
+    private fun updateHintView() {
+        if(hintCount>0) {
+            showHintText()
+        }
     }
 
     override fun onAttach(context: Context) {
@@ -170,69 +183,24 @@ public class ChooseLetterFragment() : Fragment() {
 //        val gameFragment = parentFragment as GameFragment
         when (hintCount) {
             0 -> {
-                // Display the hint message
-                if (gameFragment.chosenWord == getString(R.string.a)) {
-                    gameFragment.showHint("What do you do with a book?.")
-                }
-
-                if (gameFragment.chosenWord == getString(R.string.b)) {
-                    gameFragment.showHint("This is a mobile operating system")
-                }
-
-                if (gameFragment.chosenWord == getString(R.string.c)) {
-                    gameFragment.showHint("It is a kind of sibling.")
-                }
-
-                if (gameFragment.chosenWord == getString(R.string.d)) {
-                    gameFragment.showHint("This is used in expensive jewelry")
-                }
-
-                if (gameFragment.chosenWord == getString(R.string.e)) {
-                    gameFragment.showHint("What do you get when you come out of prison.")
-                }
-
-
+                showHintText()
             }
             1 -> {
-                // Disable half of the remaining letter buttons
-                val remainingLetters = gameFragment.getRemainingLetters()
-                println("---------------showHint-remainingLetters: " + remainingLetters)
-
-                // get length of enabled buttons and put it in buttonsEnabled list
-                var disableCount = 0
-                var buttonsEnabled: MutableList<Button> = mutableListOf()
-                for (button in letterButtons) {
-                    if (button.isEnabled == true) {
-                        disableCount += 1
-                        buttonsEnabled.add(button)
-                    }
+                if(gameFragment.getRemainingTurns()<=1){
+                    Toast.makeText(requireContext(), "Hint not available", Toast.LENGTH_SHORT).show()
+                    return
                 }
 
-                disableCount /= 2
+                disableHalfKeyboard()
 
-                println("-------------show hint func disableCount: " + disableCount)
-
-                var disabledCount = 0
-                val size = buttonsEnabled.size
-
-                println("-------------show hint func letters: " + letterButtons)
-                for (i in 0 until size) {
-
-                    //if (button.isEnabled &&  !remainingLetters.contains(button.text.toString())) {
-                    var button = buttonsEnabled.random()
-                    println("-------------show hint func letters: " + button.text.toString())
-                    if (button.isEnabled && (button.text.toString() !in remainingLetters.toString())) {
-                        println("-------------show hint func button.text.toString(): " + button.text.toString())
-                        button.isEnabled = false
-                        disabledCount++
-                        if (disabledCount >= disableCount) break
-                    }
-                    //println(button.text.toString() !in remainingLetters.toString())
-                }
                 // Deduct a turn for using the hint
                 gameFragment.useTurn()
             }
             2 -> {
+                if(gameFragment.getRemainingTurns()<=1){
+                    Toast.makeText(requireContext(), "Hint not available", Toast.LENGTH_SHORT).show()
+                    return
+                }
                 // Disable all vowel buttons and show the vowels
                 var buttonsEnabled: MutableList<Button> = mutableListOf()
                 for (button in letterButtons) {
@@ -241,14 +209,16 @@ public class ChooseLetterFragment() : Fragment() {
                         buttonsEnabled.add(button)
                     }
                 }
+
+                val temp = gameFragment.getRemainingTurns()
                 val vowels = setOf("A", "E", "I", "O", "U")
                 for (button in buttonsEnabled) {
                     if (vowels.contains(button.text.toString())) {
                         button.performClick()
-                        gameFragment.incrementRemainingTurns()
                     }
                 }
                 // Deduct a turn for using the hint
+                gameFragment.setRemainingTurns(temp)
                 gameFragment.useTurn()
             }
             else -> {
@@ -257,8 +227,73 @@ public class ChooseLetterFragment() : Fragment() {
                 return
             }
         }
-        hintCount++
-        //gameFragment.usedHint()
+    }
+
+    private fun disableHalfKeyboard() {
+        // Disable half of the remaining letter buttons
+        val remainingLetters = gameFragment.getRemainingLetters()
+        println("---------------showHint-remainingLetters: " + remainingLetters)
+
+        // get length of enabled buttons and put it in buttonsEnabled list
+        var disableCount = 0
+        var buttonsEnabled: MutableList<Button> = mutableListOf()
+        for (button in letterButtons) {
+            if (button.isEnabled == true) {
+                disableCount += 1
+                buttonsEnabled.add(button)
+            }
+        }
+
+        disableCount /= 2
+
+        println("-------------show hint func disableCount: " + disableCount)
+
+        var disabledCount = 0
+        val size = buttonsEnabled.size
+
+        println("-------------show hint func letters: " + letterButtons)
+        for (i in 0 until size) {
+
+            //if (button.isEnabled &&  !remainingLetters.contains(button.text.toString())) {
+            var button = buttonsEnabled.random()
+            println("-------------show hint func letters: " + button.text.toString())
+            if (button.isEnabled && (button.text.toString() !in remainingLetters.toString())) {
+                println("-------------show hint func button.text.toString(): " + button.text.toString())
+                button.performClick()
+                gameFragment.incrementRemainingTurns()
+                disabledCount++
+                if (disabledCount >= disableCount) break
+            }
+            //println(button.text.toString() !in remainingLetters.toString())
+        }
+    }
+
+    private fun showHintText() {
+        // Display the hint message
+        if (gameFragment.chosenWord == getString(R.string.a)) {
+//                    gameFragment.showHint("What do you do with a book?.")
+            hintText.text = "What do you do with a book?"
+        }
+
+        if (gameFragment.chosenWord == getString(R.string.b)) {
+//                    gameFragment.showHint("This is a mobile operating system")
+            hintText.text = "This is a mobile operating system."
+        }
+
+        if (gameFragment.chosenWord == getString(R.string.c)) {
+//                    gameFragment.showHint("It is a kind of sibling.")
+            hintText.text = "It is a kind of sibling."
+        }
+
+        if (gameFragment.chosenWord == getString(R.string.d)) {
+//                    gameFragment.showHint("This is used in expensive jewelry")
+            hintText.text = "This is used in expensive jewelry."
+        }
+
+        if (gameFragment.chosenWord == getString(R.string.e)) {
+//                    gameFragment.showHint("What do you get when you come out of prison.")
+            hintText.text = "What do you get when you come out of prison."
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
