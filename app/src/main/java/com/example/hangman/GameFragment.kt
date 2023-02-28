@@ -228,4 +228,12 @@ class GameFragment : Fragment() {
         hintCount++
     }
 
+    fun getRemainingTurns(): Int {
+        return remainingTurns
+    }
+
+    fun setRemainingTurns(rt:Int) {
+        remainingTurns = rt
+    }
+
 }
