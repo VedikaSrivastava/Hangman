@@ -258,7 +258,7 @@ public class ChooseLetterFragment() : Fragment() {
             }
         }
         hintCount++
-        gameFragment.usedHint()
+        //gameFragment.usedHint()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
