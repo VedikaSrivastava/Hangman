@@ -21,8 +21,8 @@ class GameFragment : Fragment() {
     private lateinit var timerView: TextView
     private lateinit var letters: Array<String>
     var chosenWord: String = ""
-    private var guessedLetters: MutableSet<String> = mutableSetOf()
-    private var remainingTurns = 0
+    var guessedLetters: MutableSet<String> = mutableSetOf()
+    var remainingTurns = 0
     var hintCount = 0
     var lettersClicked: MutableSet<String> = mutableSetOf()
     var timer = 100000
@@ -228,10 +228,12 @@ class GameFragment : Fragment() {
         hintCount++
     }
 
+    @JvmName("getRemainingTurns1")
     fun getRemainingTurns(): Int {
         return remainingTurns
     }
 
+    @JvmName("setRemainingTurns1")
     fun setRemainingTurns(rt:Int) {
         remainingTurns = rt
     }
